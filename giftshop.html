@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Image Gallery Interface</title>
+  <style>
+    body {
+      margin: 0;
+      background: #FFCF50;
+      font-family: sans-serif;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .gallery-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      overflow: hidden;
+    }
+    .popup {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0,0,0,0.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+    .popup img {
+      max-width: 90vw;
+      max-height: 90vh;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(255,255,255,0.3);
+    }
+    .dock {
+      position: fixed;
+      top: 50%;
+      left: 20px;
+      transform: translateY(-50%);
+      background: whitesmoke;
+      padding: 10px 5px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      display: flex;
+      flex-direction: column;
+      gap: -10px;
+      z-index: 101;
+    }
+    .dock img {
+      width: 50px;
+      height: 50px;
+      object-fit: cover;
+      cursor: pointer;
+      border-radius: 6px;
+      margin-top: -15px;
+      border: 2px solid white;
+      transition: transform 0.2s;
+    }
+    .dock img:first-child {
+      margin-top: 0;
+    }
+    .dock img:hover {
+      transform: scale(1.1);
+      z-index: 2;
+    }
+    .email-button {
+      display: block;
+      margin: 10px auto 0;
+      padding: 5px 10px;
+      font-size: 24px;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    .info-button {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background: #fff;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      font-size: 20px;
+      text-align: center;
+      line-height: 40px;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      z-index: 102;
+    }
+    .info-popup {
+      position: fixed;
+      bottom: 70px;
+      left: 20px;
+      width: 250px;
+      padding: 15px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      display: none;
+      z-index: 103;
+    }
+    .animate-pop {
+      animation: fadeInDown 0.6s ease;
+    }
+    @keyframes fadeInDown {
+      0% {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="popup" id="popup" onclick="hidePopup()">
+    <img id="popupImage" src="" alt="Expanded View" />
+  </div>
+
+  <div class="gallery-container" id="gallery">
+    <!-- Random image will appear here -->
+  </div>
+
+  <div class="dock" id="dock">
+    <!-- Dock images go here -->
+  </div>
+
+  <div class="info-button" onclick="toggleInfoPopup()">?</div>
+  <div class="info-popup" id="infoPopup">
+    <p><strong>Instructions:</strong></p>
+    <ul>
+      <li>Click a thumbnail to preview an image.</li>
+      <li>Click the image to expand it.</li>
+      <li>Click the email button to email the image.</li>
+    </ul>
+  </div>
+
+  <script>
+    const images = [
+      'shopAssets/card1.png', 'shopAssets/animal emoji.png', 'shopAssets/card2.png', 'shopAssets/love emoji.png', 'shopAssets/card3.png',
+      'shopAssets/card4.png', 'shopAssets/card5.png', 'shopAssets/card6.png', 'shopAssets/poster1.png', 'shopAssets/poster2.png'
+    ];
+
+    const gallery = document.getElementById('gallery');
+    const dock = document.getElementById('dock');
+    const popup = document.getElementById('popup');
+    const popupImage = document.getElementById('popupImage');
+    const infoPopup = document.getElementById('infoPopup');
+
+    function showPopup(src) {
+      popupImage.src = src;
+      popup.style.display = 'flex';
+    }
+
+    function hidePopup() {
+      popup.style.display = 'none';
+    }
+
+    function toggleInfoPopup() {
+      infoPopup.style.display = infoPopup.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function emailImage(src) {
+      const subject = encodeURIComponent('Check out this image');
+      const body = encodeURIComponent(`Here's an image I wanted to share with you: ${window.location.origin}/${src}`);
+      window.location.href = `mailto:?subject=${subject}&body=${body}`;
+    }
+
+    const shuffled = images.sort(() => 0.5 - Math.random());
+
+    const selectedImage = shuffled[0];
+    const mainImg = document.createElement('img');
+    mainImg.src = selectedImage;
+    mainImg.alt = 'Selected Image';
+    mainImg.className = 'animate-pop';
+    mainImg.style.maxWidth = '80vw';
+    mainImg.style.maxHeight = '80vh';
+    mainImg.style.borderRadius = '10px';
+    mainImg.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
+    mainImg.style.cursor = 'pointer';
+    mainImg.onclick = () => showPopup(mainImg.src);
+    gallery.appendChild(mainImg);
+
+    const emailBtn = document.createElement('button');
+    emailBtn.textContent = '💌';
+    emailBtn.className = 'email-button';
+    emailBtn.onclick = () => emailImage(mainImg.src);
+    gallery.appendChild(emailBtn);
+
+    shuffled.forEach((src, i) => {
+      const dockImg = document.createElement('img');
+      dockImg.src = src;
+      dockImg.alt = `Thumbnail ${i+1}`;
+      dockImg.onclick = () => {
+        mainImg.classList.remove('animate-pop');
+        void mainImg.offsetWidth;
+        mainImg.src = src;
+        mainImg.classList.add('animate-pop');
+        emailBtn.onclick = () => emailImage(src);
+      };
+      dock.appendChild(dockImg);
+    });
+
+    window.addEventListener("keydown", function(event) {
+    if (event.key === "Enter") {
+      window.location.href = "games.html";
+    }
+  });
+  </script>
+
+
+</body>
+</html>

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>EmojiGames</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Verdana, sans-serif;
+      background: linear-gradient(to bottom, #FFD400, #FFDD3C);
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+    }
+
+    .header {
+      font-family: Georgia, 'Times New Roman', Times, serif;
+      font-size: 6rem;
+      font-style: normal;
+      font-weight: 800;
+      letter-spacing: 32px;
+      color: #333;
+      margin-bottom: 40px;
+    }
+
+    .container {
+      display: flex;
+      text-align: center;
+      width: 100%;
+      max-width: 1200px;
+      padding: 50px;
+      background-color: #FFEA61;
+      border-radius: 16px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      height: 500px;
+    }
+
+    .canvas-container {
+      position: relative;
+      height: 100%;
+      width: 50%;
+    }
+
+    .canvas-card {
+      position: relative;
+      background: #FFFFB7;
+      border-radius: 16px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+    }
+
+    .emoji-center,
+    .sparkle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 1;
+    }
+
+
+
+    .emoji-center {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: none;
+    }
+
+    .sparkle {
+      width: 80px;
+      height: 80px;
+      z-index: 2;
+      display: none;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0); }
+    }
+
+    .right-emojis {
+      position: relative;
+      width: 50%;
+      height: 100%;
+    }
+
+    .right-emojis img {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      cursor: grab;
+      object-fit: contain;
+      animation: float 3s ease-in-out infinite;
+      /* delay will be set in JS */
+    }
+  </style>
+
+  <script>
+    let draggedEmojiSrc = '';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      setEmojiPositions();
+      assignRandomAnimationDelays();
+    });
+
+    function allowDrop(event) {
+      event.preventDefault();
+    }
+
+    function drag(event) {
+      draggedEmojiSrc = event.target.getAttribute('data-emoji');
+    }
+
+    function handleDrop(event) {
+      event.preventDefault();
+      if (!draggedEmojiSrc) return;
+      const sparkle = document.getElementById('sparkle');
+      const emojiCenter = document.getElementById('emojiCenter');
+      const sparkleSound = document.getElementById('sparkleSound');
+
+      sparkle.style.display = 'none';
+      sparkle.src = '';
+      void sparkle.offsetWidth;
+      sparkle.src = './gameAssets/spark.gif';
+      sparkle.style.display = 'block';
+
+      sparkleSound.currentTime = 0;
+      sparkleSound.play();
+
+      emojiCenter.src = draggedEmojiSrc;
+      emojiCenter.style.display = 'none';
+      setTimeout(() => emojiCenter.style.display = 'block', 600);
+      setTimeout(() => {
+        sparkle.style.display = 'none';
+        emojiCenter.style.display = 'block';
+      }, 2000);
+    }
+
+    function setEmojiPositions() {
+      document.querySelectorAll('.right-emojis img').forEach(emoji => {
+        emoji.style.left = emoji.dataset.x + 'px';
+        emoji.style.top = emoji.dataset.y + 'px';
+      });
+    }
+
+    function assignRandomAnimationDelays() {
+      document.querySelectorAll('.right-emojis img').forEach(emoji => {
+        const delay = (Math.random() * 2).toFixed(2);
+        emoji.style.animationDelay = `${delay}s`;
+      });
+    }
+  </script>
+</head>
+<body>
+
+  <div class="header">MAKEMOJI</div>
+
+  <div class="container">
+    <div class="canvas-container">
+      <div id="dropZone" class="canvas-card" ondrop="handleDrop(event)" ondragover="allowDrop(event)">
+        <img id="sparkle" class="sparkle" src="./gameAssets/spark.gif" alt="✨">
+        <img id="emojiCenter" class="emoji-center" src="" alt="Reaction Emoji">
+      </div>
+    </div>
+
+    <div class="right-emojis">
+      <img src="./gameAssets/light.svg" draggable="true" ondragstart="drag(event)" data-emoji="./gameAssets/bulb.png" data-x="50" data-y="100">
+      <img src="./gameAssets/lips2.svg" draggable="true" ondragstart="drag(event)" data-emoji="./gameAssets/kiss.png" data-x="150" data-y="170">
+      <img src="./gameAssets/umbri.svg" draggable="true" ondragstart="drag(event)" data-emoji="./gameAssets/umbrella.png" data-x="150" data-y="300">
+      <img src="./gameAssets/spi.svg" draggable="true" ondragstart="drag(event)" data-emoji="./gameAssets/spider.png" data-x="350" data-y="400">
+      <img src="./gameAssets/acc2.svg" draggable="true" ondragstart="drag(event)" data-emoji="./gameAssets/fire.png" data-x="350" data-y="75">
+      <img src="./gameAssets/sun.svg" draggable="true" ondragstart="drag(event)" data-emoji="./gameAssets/sunlight.png" data-x="250" data-y="50">
+      <img src="./gameAssets/melon.svg" draggable="true" ondragstart="drag(event)" data-emoji="./gameAssets/fruit.png" data-x="250" data-y="150">
+      <img src="./gameAssets/phone.svg" draggable="true" ondragstart="drag(event)" data-emoji="./gameAssets/phone.png" data-x="350" data-y="310">
+      <img src="./gameAssets/crown.svg" draggable="true" ondragstart="drag(event)" data-emoji="./gameAssets/king.png" data-x="250" data-y="250">
+      <img src="./gameAssets/flower.svg" draggable="true" ondragstart="drag(event)" data-emoji="./gameAssets/cherry.png" data-x="40" data-y="250">
+    </div>
+  </div>
+
+  <audio id="sparkleSound" src="./gameAssets/sparkle.mp3" preload="auto"></audio>
+
+  <script>
+    // Still listening for Enter to jump pages
+    window.addEventListener("keydown", function(event) {
+      if (event.key === "Enter") {
+        window.location.href = "giftshop.html";
+      }
+    });
+  </script>
+
+</body>
+</html>

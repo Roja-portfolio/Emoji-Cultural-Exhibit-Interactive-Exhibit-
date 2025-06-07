@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exhibit of Emoji</title>
+  <style>
+    /* Make body fill the viewport and use Flexbox centering */
+    body {
+      display: flex;
+      flex-direction: column;         /* stack h1 and video vertically */
+      justify-content: center;        /* vertical centering */
+      align-items: center;            /* horizontal centering */
+      height: 100vh;                  /* full viewport height */
+      margin: 0;                      /* remove default margins */
+    }
+
+    video {
+      max-width: 100%;
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>what can we do man? MP4 is a lossy video format</h1>
+
+  <video width="640" height="360" controls>
+    <source src="./assests/emoji video.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+
+  <script>
+    document.addEventListener("keydown", function(event) {
+      if (event.key === "Enter") {
+        window.location.href = "games.html";
+      }
+    });
+  </script>
+
+</body>
+</html>
